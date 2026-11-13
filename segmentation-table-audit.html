@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Segmentation table audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --bg: #f1f2ee; --panel: #ffffff; --ink: #1b2229; --muted: #5a6670; --line: #cfd6d3; --head: #e4e9e6;
+  --pen: #c0281c; --pen-soft: #fbe3df; --ok: #1d6b3c; --ok-soft: #dcf0e3; --miss: #96560a; --miss-soft: #fbead0;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171a; --panel: #1b2328; --ink: #e9eef0; --muted: #9fb0b8; --line: #34424a; --head: #243138;
+    --pen: #ff8a7e; --pen-soft: #4a211d; --ok: #6fd596; --ok-soft: #173826; --miss: #f0b35e; --miss-soft: #40300f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171a; --panel: #1b2328; --ink: #e9eef0; --muted: #9fb0b8; --line: #34424a; --head: #243138;
+  --pen: #ff8a7e; --pen-soft: #4a211d; --ok: #6fd596; --ok-soft: #173826; --miss: #f0b35e; --miss-soft: #40300f;
+  color-scheme: dark;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 16px; line-height: 1.45; }
+h1, h2, h3 { font-family: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif; margin: 0; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 22px 16px 44px; }
+header h1 { font-size: clamp(1.6rem, 4vw, 2.3rem); line-height: 1.1; margin-bottom: 12px; }
+.memo { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; max-width: 74ch; }
+.memo .from { color: var(--muted); font-size: .88rem; margin-bottom: 6px; }
+.memo p { margin: 0 0 8px; }
+.memo p:last-child { margin: 0; }
+.bar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin: 18px 0 10px; }
+.stat { font-weight: 600; margin-right: 8px; }
+.btn { font: inherit; font-weight: 600; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); padding: 7px 14px; border-radius: 8px; cursor: pointer; }
+.btn.primary { background: var(--ink); color: var(--bg); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn:focus-visible, .cell:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.hint { color: var(--muted); font-size: .92rem; min-height: 1.4em; }
+.sheet { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; min-width: 880px; font-size: .93rem; }
+th, td { border: 1px solid var(--line); padding: 0; vertical-align: top; text-align: left; }
+thead th.col { background: var(--head); text-align: center; font-weight: 400; color: var(--muted); font-size: .8rem; padding: 3px; }
+thead th.name { background: var(--head); font-weight: 600; padding: 7px 8px; }
+th.rn { background: var(--head); color: var(--muted); font-weight: 400; text-align: center; width: 34px; font-size: .8rem; padding: 6px 2px; }
+.cell { display: block; width: 100%; min-height: 44px; font: inherit; text-align: left; background: transparent; color: var(--ink); border: 0; padding: 7px 8px; cursor: crosshair; border-radius: 0; }
+.cell:hover { background: var(--head); }
+.cell.flag { background: var(--pen-soft); box-shadow: inset 0 0 0 2px var(--pen); border-radius: 14px; }
+.cell.found { background: var(--ok-soft); box-shadow: inset 0 0 0 2px var(--ok); border-radius: 14px; }
+.cell.missed { background: var(--miss-soft); box-shadow: inset 0 0 0 2px var(--miss); border-radius: 14px; }
+.cell.falsef { background: var(--head); box-shadow: inset 0 0 0 2px var(--muted); border-radius: 14px; text-decoration: line-through; text-decoration-color: var(--muted); }
+.cell.fixed { background: var(--ok-soft); }
+.cell:disabled { cursor: default; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 8px 0 0; font-size: .86rem; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 6px; margin-right: 5px; vertical-align: -2px; border: 2px solid; }
+.legend .l1::before { border-color: var(--ok); background: var(--ok-soft); }
+.legend .l2::before { border-color: var(--miss); background: var(--miss-soft); }
+.legend .l3::before { border-color: var(--muted); background: var(--head); }
+.results { margin-top: 20px; }
+.verdict { padding: 14px 16px; border-radius: 10px; border-left: 6px solid; margin-bottom: 14px; }
+.verdict h2 { font-size: 1.25rem; margin-bottom: 4px; }
+.verdict.ship { background: var(--ok-soft); border-color: var(--ok); }
+.verdict.fix { background: var(--miss-soft); border-color: var(--miss); }
+.verdict.hold { background: var(--pen-soft); border-color: var(--pen); }
+.issue { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+.issue h3 { font-size: 1rem; }
+.issue .meta { color: var(--muted); font-size: .85rem; margin: 2px 0 4px; }
+.issue .fixline { margin-top: 4px; font-size: .92rem; }
+.badge { display: inline-block; font-size: .8rem; font-weight: 600; padding: 1px 8px; border-radius: 10px; margin-right: 6px; }
+.badge.y { background: var(--ok-soft); color: var(--ok); }
+.badge.n { background: var(--miss-soft); color: var(--miss); }
+@media print { .bar, .btn { display: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Segmentation table audit</h1>
+    <div class="memo">
+      <div class="from">From the Sales Director, 4:45 pm, the day before launch</div>
+      <p>Here’s the segmentation table for the new BI platform launch. I think it’s ready to go to the campaign team tonight. Can you take a quick look first?</p>
+      <p><strong>Your job:</strong> pick up the red pen and circle every cell with a problem. Click a cell to circle it, click again to erase.</p>
+    </div>
+  </header>
+
+  <div class="bar">
+    <span class="stat" id="count">0 cells circled</span>
+    <button class="btn" id="hintBtn" type="button">How many problems are there?</button>
+    <button class="btn primary" id="submit" type="button">Send my review</button>
+    <button class="btn" id="reset" type="button">Start over</button>
+    <button class="btn" id="snd" type="button" aria-pressed="true">Sound: on</button>
+  </div>
+  <div class="hint" id="hint" aria-live="polite"></div>
+
+  <div class="sheet"><table id="sheet" aria-label="Segmentation table to review"></table></div>
+  <div class="legend" id="legend" hidden>
+    <span class="l1">Problem you caught</span><span class="l2">Problem you missed</span><span class="l3">Fine as written</span>
+  </div>
+
+  <div class="results" id="results" aria-live="polite"></div>
+</div>
+
+<script>
+var Snd = (function () {
+  var ctx = null, on = true;
+  try { on = localStorage.getItem("snd-off") !== "1"; } catch (e) {}
+  function ac() {
+    if (!ctx) { var A = window.AudioContext || window.webkitAudioContext; if (!A) return null; try { ctx = new A(); } catch (e) { return null; } }
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  function tone(f, t0, d, type, v) {
+    var a = ac(); if (!a) return;
+    var o = a.createOscillator(), g = a.createGain(), s = a.currentTime + t0;
+    o.type = type || "sine"; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, s);
+    g.gain.exponentialRampToValueAtTime(v || 0.07, s + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, s + d);
+    o.connect(g); g.connect(a.destination); o.start(s); o.stop(s + d + 0.03);
+  }
+  var P = {
+    click: function () { tone(600, 0, 0.05, "triangle", 0.035); },
+    pen: function () { tone(300, 0, 0.07, "triangle", 0.05); },
+    erase: function () { tone(240, 0, 0.06, "triangle", 0.04); },
+    good: function () { tone(523, 0, 0.12, "sine", 0.07); tone(784, 0.09, 0.2, "sine", 0.07); },
+    tri: function () { tone(523, 0, 0.12, "sine", 0.07); tone(659, 0.09, 0.12, "sine", 0.07); tone(784, 0.18, 0.25, "sine", 0.07); },
+    done: function () { tone(523, 0, 0.14, "sine", 0.07); tone(659, 0.1, 0.14, "sine", 0.07); tone(784, 0.2, 0.14, "sine", 0.07); tone(1047, 0.3, 0.45, "sine", 0.07); },
+    bad: function () { tone(196, 0, 0.18, "triangle", 0.07); tone(165, 0.1, 0.24, "triangle", 0.07); },
+    warn: function () { tone(330, 0, 0.14, "triangle", 0.06); tone(294, 0.1, 0.18, "triangle", 0.06); }
+  };
+  function label() {
+    var b = document.getElementById("snd");
+    if (b) { b.textContent = "Sound: " + (on ? "on" : "off"); b.setAttribute("aria-pressed", String(on)); }
+  }
+  return {
+    play: function (n) { if (!on || !P[n]) return; try { P[n](); } catch (e) {} },
+    init: function (auto) {
+      var b = document.getElementById("snd");
+      if (b) b.addEventListener("click", function () {
+        on = !on;
+        try { localStorage.setItem("snd-off", on ? "0" : "1"); } catch (e) {}
+        label(); if (on) { try { P.click(); } catch (e) {} }
+      });
+      label();
+      if (auto) document.addEventListener("click", function (e) {
+        var t = e.target.closest && e.target.closest("button, label");
+        if (t && t.id !== "snd" && e.target.tagName !== "INPUT") Snd.play("click");
+      });
+    }
+  };
+})();
+var verdictPlayed = false;
+var HEAD = ["Segment Name", "Priority", "Purpose", "Criteria and Logic", "Estimated Size"];
+var ROWS = [
+  ["Segment A", "P1", "Immediate sales follow-up", "Industry: Retail AND Size: 50–500 employees AND (Behavior: Visited pricing page OR Requested demo)", "150"],
+  ["P1 – Retail Sales Call List", "P1", "Immediate sales follow-up", "Industry: Retail AND Size: 50–500 employees", "15,000"],
+  ["P2 – Retail Ops and Marketing (Nurture)", "P2", "Automated nurture with case studies", "Industry: Retail AND Size: 50–500 employees AND Title: Operations Manager OR Marketing Analyst", "2,500"],
+  ["P3 – Mid-Market Retail (Awareness)", "P2", "Top-of-funnel awareness on LinkedIn", "Industry: Retail AND Size: 50–500 employees", "15,000"],
+  ["P3 – Sustainability-Minded Buyers", "P3", "Brand awareness", "Cares about the environment AND values quality", ""],
+  ["P2 – Alaska Retail Analysts (Nurture)", "P2", "Nurture with analytics content", "Region: Alaska AND Industry: Retail AND Title: BI Analyst AND Behavior: Read the blog on a Tuesday", "3"],
+  ["P2 – Retail E-commerce Leads (Nurture)", "P2", "Case study nurture", "Industry: Retail AND Size: Large AND Title: E-commerce Manager", "1,800"]
+];
+var ISSUES = [
+  { id: 1, cells: ["0,0"], sev: "minor", title: "Vague segment name", test: "Clear naming",
+    why: "“Segment A” tells nobody who is in it or why. A good name carries the priority and the audience, so sales and leadership read it the same way." },
+  { id: 2, cells: ["1,3", "1,4"], sev: "critical", title: "A P1 sales list with no intent signal and 15,000 contacts", test: "Differentiable and actionable",
+    why: "P1 means “call these people first.” Without a behavior such as a webinar or pricing visit, this is really an awareness list, and sales cannot work 15,000 contacts." },
+  { id: 3, cells: ["2,3"], sev: "medium", title: "OR used without parentheses", test: "Clear logic",
+    why: "Without grouping, a platform may read this as “(Retail AND 50–500 AND Operations Manager) OR Marketing Analyst” and pull in marketing analysts from every company. Group the options: (Title: Operations Manager OR Marketing Analyst)." },
+  { id: 4, cells: ["3,1"], sev: "medium", title: "Priority does not match the name", test: "Consistency",
+    why: "The name says P3 but the priority says P2. Anyone sorting by priority would put an awareness audience in the nurture tier." },
+  { id: 5, cells: ["4,3"], sev: "critical", title: "Criteria that no platform can filter on", test: "Measurable and accessible",
+    why: "Attitudes like “cares about the environment” are not fields in a CRM or an ad platform. Use a proxy you can actually filter, such as downloaded the sustainability report." },
+  { id: 6, cells: ["4,4"], sev: "medium", title: "Missing size estimate", test: "Substantial",
+    why: "Without a size you cannot tell whether the segment is worth a campaign. That is the whole point of the Estimated Size column." },
+  { id: 7, cells: ["5,3", "5,4"], sev: "critical", title: "Over-filtered down to 3 contacts", test: "Substantial",
+    why: "Four filters, including a day of the week, leave a segment too small to justify a campaign. Drop the region and blog-day filters and keep the ones that define the persona." },
+  { id: 8, cells: ["6,3"], sev: "medium", title: "Vague value: “Large”", test: "Clear logic",
+    why: "“Large” means different things to different people. Use a number range, such as 50–500 employees, so anyone can rebuild the segment the same way." }
+];
+var FIXES = {
+  "0,0": "P1 – High-Intent Retail Leads",
+  "1,3": "Industry: Retail AND Size: 50–500 employees AND Behavior: Attended product webinar in last 30 days",
+  "1,4": "400",
+  "2,3": "Industry: Retail AND Size: 50–500 employees AND (Title: Operations Manager OR Marketing Analyst)",
+  "3,1": "P3",
+  "4,3": "Industry: Retail AND Behavior: Downloaded sustainability report",
+  "4,4": "4,000",
+  "5,3": "Industry: Retail AND Size: 50–500 employees AND Title: BI Analyst",
+  "5,4": "900",
+  "6,3": "Industry: Retail AND Size: 50–500 employees AND Title: E-commerce Manager"
+};
+var flags = {}, submitted = false, showFixed = false;
+
+function $(id) { return document.getElementById(id); }
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+function issueOf(key) { for (var i = 0; i < ISSUES.length; i++) if (ISSUES[i].cells.indexOf(key) >= 0) return ISSUES[i]; return null; }
+function caught(is) { return is.cells.some(function (k) { return flags[k]; }); }
+
+function buildSheet() {
+  var h = "<thead><tr><th class=\"rn\"></th>";
+  "ABCDE".split("").forEach(function (l) { h += '<th class="col">' + l + "</th>"; });
+  h += '</tr><tr><th class="rn">1</th>';
+  HEAD.forEach(function (t) { h += '<th class="name">' + t + "</th>"; });
+  h += "</tr></thead><tbody>";
+  ROWS.forEach(function (r, ri) {
+    h += '<tr><th class="rn">' + (ri + 2) + "</th>";
+    r.forEach(function (v, ci) {
+      var key = ri + "," + ci, cls = "cell", txt = v;
+      if (showFixed && FIXES[key] !== undefined) { cls += " fixed"; txt = FIXES[key]; }
+      else if (submitted) {
+        var is = issueOf(key);
+        if (is && flags[key]) cls += " found";
+        else if (is && !caught(is)) cls += " missed";
+        else if (is && caught(is)) cls += "";
+        else if (flags[key]) cls += " falsef";
+      } else if (flags[key]) cls += " flag";
+      h += '<td><button type="button" class="' + cls + '" data-k="' + key + '" aria-pressed="' + (!!flags[key]) + '" aria-label="Row ' + (ri + 2) + ", " + HEAD[ci] + ": " + (txt || "empty") + '"' + (submitted ? " disabled" : "") + ">" + esc(txt) + "</button></td>";
+    });
+    h += "</tr>";
+  });
+  $("sheet").innerHTML = h + "</tbody>";
+}
+function updateCount() {
+  var n = Object.keys(flags).filter(function (k) { return flags[k]; }).length;
+  $("count").textContent = n + (n === 1 ? " cell circled" : " cells circled");
+}
+function buildResults() {
+  var found = 0, crit = 0, critMissed = 0, falseN = 0;
+  ISSUES.forEach(function (is) { if (is.sev === "critical") crit++; if (caught(is)) found++; else if (is.sev === "critical") critMissed++; });
+  Object.keys(flags).forEach(function (k) { if (flags[k] && !issueOf(k)) falseN++; });
+  var cls, head, msg;
+  if (critMissed > 0) { cls = "hold"; head = "Hold the launch"; msg = "You missed " + critMissed + " critical " + (critMissed === 1 ? "problem" : "problems") + ". These would send the wrong audience to sales, or build a segment nobody can reach."; }
+  else if (found < ISSUES.length) { cls = "fix"; head = "Ship after quick fixes"; msg = "You caught every critical problem, but " + (ISSUES.length - found) + " smaller " + (ISSUES.length - found === 1 ? "issue is" : "issues are") + " still hiding in the table."; }
+  else { cls = "ship"; head = "Clean review"; msg = "You caught all 8 problems. The table is ready once these fixes are applied."; }
+  if (falseN) msg += " You also circled " + falseN + " " + (falseN === 1 ? "cell that was" : "cells that were") + " fine as written, so check that you are not slowing the team down with false alarms.";
+  if (!verdictPlayed) { verdictPlayed = true; Snd.play(cls === "ship" ? "done" : cls === "fix" ? "warn" : "bad"); }
+  var h = '<div class="verdict ' + cls + '"><h2>' + head + "</h2><p style=\"margin:0\">" + msg + " You caught " + found + " of " + ISSUES.length + ".</p></div>";
+  h += '<div class="bar"><button class="btn primary" id="fixBtn" type="button">' + (showFixed ? "Show the original table" : "Apply the fixes to the table") + "</button></div>";
+  ISSUES.forEach(function (is) {
+    var c = caught(is);
+    h += '<div class="issue"><h3><span class="badge ' + (c ? "y" : "n") + '">' + (c ? "Caught" : "Missed") + "</span>" + is.title + "</h3>" +
+      '<div class="meta">Row ' + (parseInt(is.cells[0].split(",")[0], 10) + 2) + " · " + is.sev + " · Test: " + is.test + "</div><div>" + is.why + "</div>" +
+      '<div class="fixline"><strong>Fix:</strong> ' + is.cells.map(function (k) { return esc(FIXES[k]); }).join(" | ") + "</div></div>";
+  });
+  $("results").innerHTML = h;
+  $("fixBtn").addEventListener("click", function () { showFixed = !showFixed; Snd.play(showFixed ? "good" : "click"); buildSheet(); buildResults(); });
+}
+
+$("sheet").addEventListener("click", function (e) {
+  var b = e.target.closest(".cell"); if (!b || submitted) return;
+  var k = b.getAttribute("data-k"); flags[k] = !flags[k]; if (!flags[k]) delete flags[k];
+  Snd.play(flags[k] ? "pen" : "erase");
+  buildSheet(); updateCount();
+  var again = document.querySelector('[data-k="' + k + '"]'); if (again) again.focus();
+});
+$("hintBtn").addEventListener("click", function () {
+  $("hint").textContent = "There are " + ISSUES.length + " problems hiding in this table. Some span more than one cell, and circling any cell in the problem counts. Three of them would stop the launch.";
+});
+$("submit").addEventListener("click", function () {
+  if (!Object.keys(flags).length) { $("hint").textContent = "Circle at least one cell before you send your review."; return; }
+  submitted = true; $("submit").disabled = true; $("hintBtn").disabled = true; $("legend").hidden = false; $("hint").textContent = "";
+  buildSheet(); buildResults();
+  $("results").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+$("reset").addEventListener("click", function () {
+  flags = {}; submitted = false; showFixed = false; verdictPlayed = false; Snd.play("click");  $("submit").disabled = false; $("hintBtn").disabled = false; $("legend").hidden = true; $("hint").textContent = ""; $("results").innerHTML = "";
+  buildSheet(); updateCount();
+});
+buildSheet(); updateCount();
+Snd.init(false);
+</script>
+</body>
+</html>

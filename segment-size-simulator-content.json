@@ -1,0 +1,126 @@
+{
+  "base": 500000,
+  "layers": {
+    "industry": {
+      "label": "Industry",
+      "opts": [
+        [
+          "Retail",
+          0.12
+        ],
+        [
+          "Healthcare",
+          0.1
+        ],
+        [
+          "Financial services",
+          0.14
+        ],
+        [
+          "Manufacturing",
+          0.16
+        ]
+      ]
+    },
+    "size": {
+      "label": "Size",
+      "opts": [
+        [
+          "50–500 employees",
+          0.3
+        ],
+        [
+          "500–5,000 employees",
+          0.25
+        ],
+        [
+          "5,000+ employees",
+          0.15
+        ]
+      ]
+    },
+    "region": {
+      "label": "Region",
+      "opts": [
+        [
+          "US",
+          0.86
+        ],
+        [
+          "Canada",
+          0.14
+        ],
+        [
+          "Alaska",
+          0.004
+        ]
+      ]
+    },
+    "title": {
+      "label": "Title",
+      "opts": [
+        [
+          "Operations, Marketing or E-commerce Manager",
+          0.15
+        ],
+        [
+          "BI or Data Analyst",
+          0.08
+        ],
+        [
+          "VP or above",
+          0.06
+        ]
+      ]
+    },
+    "behavior": {
+      "label": "Behavior",
+      "opts": [
+        [
+          "Downloaded a whitepaper",
+          0.12
+        ],
+        [
+          "Attended a webinar",
+          0.07
+        ],
+        [
+          "Visited pricing page (last 14 days)",
+          0.02
+        ],
+        [
+          "Requested a demo",
+          0.01
+        ]
+      ]
+    }
+  },
+  "missions": [
+    {
+      "id": "p1",
+      "name": "P1: Sales follow-up",
+      "lo": 50,
+      "hi": 500,
+      "brief": "Sales wants a short, high-quality list to call this week. Aim for 50 to 500 contacts, and include a behavior that shows buying intent.",
+      "need": "behavior",
+      "needMsg": "The size is right, but a sales list needs an intent signal. Add a behavior such as a pricing page visit or a demo request."
+    },
+    {
+      "id": "p2",
+      "name": "P2: Nurture campaign",
+      "lo": 500,
+      "hi": 5000,
+      "brief": "Marketing wants a core audience for an automated nurture series. Aim for 500 to 5,000 contacts, and use job titles so the content can speak to a persona.",
+      "need": "title",
+      "needMsg": "The size is right, but a nurture series needs a persona to speak to. Add one or more job titles."
+    },
+    {
+      "id": "p3",
+      "name": "P3: Awareness",
+      "lo": 5000,
+      "hi": 25000,
+      "brief": "Brand wants broad top-of-funnel reach in the target market. Aim for 5,000 to 25,000 contacts using mainly firmographic criteria.",
+      "need": null
+    }
+  ]
+}

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Persona evidence board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --bg: #edf0f5; --panel: #ffffff; --ink: #14202b; --muted: #56636f; --line: #d1d9e1;
+  --crm: #1d5fa8; --crm-soft: #dce9f7;
+  --li: #6a3f9e; --li-soft: #eadff6;
+  --int: #0f6b64; --int-soft: #d6eeea;
+  --good: #0f6b64; --good-soft: #d6eeea; --bad: #a8261b; --bad-soft: #f8dcd8; --sel: #14202b;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f171e; --panel: #172430; --ink: #e8eef3; --muted: #9db0bf; --line: #2b3b49;
+    --crm: #7fb4ee; --crm-soft: #172c44; --li: #c5a2ee; --li-soft: #2c1f41; --int: #4fc4b8; --int-soft: #14393a;
+    --good: #4fc4b8; --good-soft: #14393a; --bad: #ff9186; --bad-soft: #471f1b; --sel: #e8eef3;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f171e; --panel: #172430; --ink: #e8eef3; --muted: #9db0bf; --line: #2b3b49;
+  --crm: #7fb4ee; --crm-soft: #172c44; --li: #c5a2ee; --li-soft: #2c1f41; --int: #4fc4b8; --int-soft: #14393a;
+  --good: #4fc4b8; --good-soft: #14393a; --bad: #ff9186; --bad-soft: #471f1b; --sel: #e8eef3;
+  color-scheme: dark;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 16px; line-height: 1.45; }
+h1, h2, h3 { font-family: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif; margin: 0; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 22px 16px 44px; }
+header h1 { font-size: clamp(1.6rem, 4vw, 2.3rem); line-height: 1.1; margin-bottom: 8px; }
+header p { margin: 0; color: var(--muted); max-width: 70ch; }
+.bar { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin: 16px 0 10px; }
+.stat { font-weight: 600; }
+.stat span { color: var(--muted); font-weight: 400; }
+.btn { font: inherit; font-weight: 600; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); padding: 6px 14px; border-radius: 8px; cursor: pointer; }
+.btn:focus-visible, .card:focus-visible, .block:focus-visible { outline: 3px solid var(--sel); outline-offset: 2px; }
+.msg { min-height: 52px; padding: 10px 14px; border-radius: 8px; border-left: 5px solid var(--line); background: var(--panel); margin-bottom: 16px; }
+.msg.good { border-color: var(--good); background: var(--good-soft); }
+.msg.bad { border-color: var(--bad); background: var(--bad-soft); }
+.layout { display: grid; grid-template-columns: 330px 1fr; gap: 18px; align-items: start; }
+@media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+.panel h2 { font-size: 1.1rem; margin-bottom: 2px; }
+.sub { color: var(--muted); font-size: .88rem; margin: 0 0 10px; }
+.tray { display: flex; flex-direction: column; gap: 8px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-left-width: 6px; border-radius: 6px; padding: 8px 10px; cursor: grab; user-select: none; }
+.card .tag { font-size: .8rem; font-weight: 600; margin-bottom: 2px; }
+.card.crm { border-left-color: var(--crm); } .card.crm .tag { color: var(--crm); }
+.card.li { border-left-color: var(--li); } .card.li .tag { color: var(--li); }
+.card.int { border-left-color: var(--int); } .card.int .tag { color: var(--int); }
+.card.sel { outline: 3px solid var(--sel); outline-offset: 1px; }
+.card.shake { animation: shake .35s; }
+@keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.empty { color: var(--muted); font-style: italic; padding: 8px 2px; }
+.canvas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (max-width: 560px) { .canvas { grid-template-columns: 1fr; } }
+.block { border: 2px dashed var(--line); border-radius: 10px; padding: 10px; min-height: 120px; background: var(--panel); cursor: pointer; }
+.block.target { border-color: var(--sel); background: var(--bg); }
+.block h3 { font-size: 1rem; }
+.block .d { color: var(--muted); font-size: .85rem; margin-bottom: 6px; }
+.block.out { grid-column: 1 / -1; min-height: 80px; }
+.chip { font-size: .9rem; border-left: 4px solid; border-radius: 4px; padding: 4px 8px; margin-top: 5px; background: var(--bg); }
+.chip.crm { border-color: var(--crm); } .chip.li { border-color: var(--li); } .chip.int { border-color: var(--int); }
+.chip small { display: block; color: var(--muted); }
+.lower { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+@media (max-width: 860px) { .lower { grid-template-columns: 1fr; } }
+.theme { margin-bottom: 14px; }
+.theme h3 { font-size: .98rem; margin-bottom: 6px; }
+.lamps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+@media (max-width: 480px) { .lamps { grid-template-columns: 1fr; } }
+.lamp { border: 1.5px solid var(--line); border-radius: 8px; padding: 6px 8px; font-size: .85rem; color: var(--muted); }
+.lamp b { display: block; color: var(--ink); font-size: .85rem; }
+.lamp.on { color: var(--ink); }
+.lamp.on.crm { background: var(--crm-soft); border-color: var(--crm); }
+.lamp.on.li { background: var(--li-soft); border-color: var(--li); }
+.lamp.on.int { background: var(--int-soft); border-color: var(--int); }
+.verdict { margin-top: 6px; font-weight: 600; font-size: .92rem; }
+.verdict.ok { color: var(--good); }
+.persona h3 { font-size: 1.35rem; margin-bottom: 8px; }
+.persona dl { margin: 0; }
+.persona dt { font-weight: 600; margin-top: 8px; }
+.persona dd { margin: 2px 0 0; color: var(--ink); }
+.persona dd.wait { color: var(--muted); font-style: italic; }
+.persona ul { margin: 2px 0 0; padding-left: 18px; }
+.persona li small { color: var(--muted); }
+.done { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: var(--good-soft); border-left: 5px solid var(--good); }
+@media (prefers-reduced-motion: reduce) { .card.shake { animation: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Persona evidence board</h1>
+    <p>Innovatech Analytics is about to launch a data analytics platform, and your manager wants the first persona. Sort 16 pieces of evidence into the persona canvas. Some belong on it. Some are noise.</p>
+  </header>
+
+  <div class="bar">
+    <div class="stat" id="sPlaced">0 of 16 sorted</div>
+    <div class="stat" id="sTri">0 of 2 pain points triangulated</div>
+    <button class="btn" id="reset" type="button">Start over</button>
+    <button class="btn" id="snd" type="button" aria-pressed="true">Sound: on</button>
+  </div>
+  <div class="msg" id="msg" role="status" aria-live="polite">Pick an evidence card, then pick the canvas block where it belongs. On a computer you can also drag it.</div>
+
+  <div class="layout">
+    <section class="panel" aria-label="Evidence tray">
+      <h2>Evidence tray</h2>
+      <p class="sub">Each card is tagged by where it came from: CRM shows what they do, LinkedIn shows who they are, interviews show why.</p>
+      <div class="tray" id="tray"></div>
+    </section>
+    <section class="panel" aria-label="Persona canvas">
+      <h2>Persona canvas</h2>
+      <p class="sub">Select a card, then select a block.</p>
+      <div class="canvas" id="canvas"></div>
+    </section>
+  </div>
+
+  <div class="lower">
+    <section class="panel" aria-label="Triangulation check">
+      <h2>Triangulation check</h2>
+      <p class="sub">A pain point is solid when a CRM signal, a LinkedIn profile detail and an interview quote all point to it.</p>
+      <div id="meter"></div>
+    </section>
+    <section class="panel persona" aria-label="Persona preview">
+      <h2>Your persona so far</h2>
+      <div id="persona"></div>
+      <div class="actions" style="margin-top:12px"><button class="btn" id="copy" type="button">Copy persona summary</button> <span id="copied" class="sub" aria-live="polite"></span></div>
+    </section>
+  </div>
+</div>
+
+<script>
+var Snd = (function () {
+  var ctx = null, on = true;
+  try { on = localStorage.getItem("snd-off") !== "1"; } catch (e) {}
+  function ac() {
+    if (!ctx) { var A = window.AudioContext || window.webkitAudioContext; if (!A) return null; try { ctx = new A(); } catch (e) { return null; } }
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  function tone(f, t0, d, type, v) {
+    var a = ac(); if (!a) return;
+    var o = a.createOscillator(), g = a.createGain(), s = a.currentTime + t0;
+    o.type = type || "sine"; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, s);
+    g.gain.exponentialRampToValueAtTime(v || 0.07, s + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, s + d);
+    o.connect(g); g.connect(a.destination); o.start(s); o.stop(s + d + 0.03);
+  }
+  var P = {
+    click: function () { tone(600, 0, 0.05, "triangle", 0.035); },
+    pen: function () { tone(300, 0, 0.07, "triangle", 0.05); },
+    erase: function () { tone(240, 0, 0.06, "triangle", 0.04); },
+    good: function () { tone(523, 0, 0.12, "sine", 0.07); tone(784, 0.09, 0.2, "sine", 0.07); },
+    tri: function () { tone(523, 0, 0.12, "sine", 0.07); tone(659, 0.09, 0.12, "sine", 0.07); tone(784, 0.18, 0.25, "sine", 0.07); },
+    done: function () { tone(523, 0, 0.14, "sine", 0.07); tone(659, 0.1, 0.14, "sine", 0.07); tone(784, 0.2, 0.14, "sine", 0.07); tone(1047, 0.3, 0.45, "sine", 0.07); },
+    bad: function () { tone(196, 0, 0.18, "triangle", 0.07); tone(165, 0.1, 0.24, "triangle", 0.07); },
+    warn: function () { tone(330, 0, 0.14, "triangle", 0.06); tone(294, 0.1, 0.18, "triangle", 0.06); }
+  };
+  function label() {
+    var b = document.getElementById("snd");
+    if (b) { b.textContent = "Sound: " + (on ? "on" : "off"); b.setAttribute("aria-pressed", String(on)); }
+  }
+  return {
+    play: function (n) { if (!on || !P[n]) return; try { P[n](); } catch (e) {} },
+    init: function (auto) {
+      var b = document.getElementById("snd");
+      if (b) b.addEventListener("click", function () {
+        on = !on;
+        try { localStorage.setItem("snd-off", on ? "0" : "1"); } catch (e) {}
+        label(); if (on) { try { P.click(); } catch (e) {} }
+      });
+      label();
+      if (auto) document.addEventListener("click", function (e) {
+        var t = e.target.closest && e.target.closest("button, label");
+        if (t && t.id !== "snd" && e.target.tagName !== "INPUT") Snd.play("click");
+      });
+    }
+  };
+})();
+var SRC = { crm: { n: "CRM", d: "what they do" }, li: { n: "LinkedIn", d: "who they are" }, int: { n: "Interview", d: "why" } };
+var BLOCKS = {
+  role: { t: "Role and seniority", d: "Who they are professionally", hint: "This one is about the person’s job, skills or place in the organization, not the company and not their feelings." },
+  company: { t: "Company context", d: "The environment they work in", hint: "This one describes the company: its size, industry or tools." },
+  pain: { t: "Pain points", d: "What frustrates them, in their words", hint: "A pain point is a problem they feel today. Look for frustration in their own voice." },
+  goal: { t: "Goals", d: "What success looks like", hint: "A goal is the outcome they want, not the obstacle in the way." },
+  criteria: { t: "Decision criteria", d: "What they need before they buy", hint: "Decision criteria are conditions a product has to meet before they will consider it." },
+  signals: { t: "Behavior signals", d: "What they have done with you", hint: "Behavior signals are actions recorded in your CRM, such as visits, downloads and attendance." },
+  out: { t: "Leave out", d: "Irrelevant or stereotyped details", hint: "" }
+};
+var THEMES = [
+  { id: "reporting", name: "Manual reporting drains the week" },
+  { id: "integration", name: "Disconnected tools" }
+];
+var CARDS = [
+  { id: 1, src: "crm", text: "Attended the webinar “Automating BI Reporting”", block: "signals", theme: "reporting", why: "A behavior signal. They are actively researching how to automate reporting." },
+  { id: 2, src: "crm", text: "Visited the pricing page 3 times in 14 days", block: "signals", theme: null, why: "A behavior signal. Repeat pricing visits suggest they are evaluating cost." },
+  { id: 3, src: "crm", text: "Retail company with 200–1,000 employees", block: "company", theme: null, why: "Firmographic context. Size and industry shape budget and buying process." },
+  { id: 4, src: "crm", text: "Opened the API and integrations docs 4 times", block: "signals", theme: "integration", why: "A behavior signal. They keep checking how the product connects to other systems." },
+  { id: 5, src: "li", text: "Business Intelligence Manager, 6 years of experience", block: "role", theme: null, why: "Title and experience define their role and seniority." },
+  { id: 6, src: "li", text: "Skills listed: Excel, SQL, Tableau", block: "role", theme: "reporting", why: "Skills show how they work day to day. They live in spreadsheets and queries." },
+  { id: 7, src: "li", text: "Reports to the VP of Operations", block: "role", theme: null, why: "Reporting line shows who influences their decisions." },
+  { id: 8, src: "li", text: "Company tech stack includes NetSuite and Shopify Plus", block: "company", theme: "integration", why: "Company context. The tools already in place decide what has to integrate." },
+  { id: 9, src: "int", text: "“I spend half my week pulling numbers into a spreadsheet.”", block: "pain", theme: "reporting", why: "A pain point in their own words, ready to reuse in messaging." },
+  { id: 10, src: "int", text: "“My tools don’t talk to each other, so I rebuild the same report by hand.”", block: "pain", theme: "integration", why: "A second pain point, about disconnected systems." },
+  { id: 11, src: "int", text: "“I need to show leadership which campaigns actually drive revenue.”", block: "goal", theme: null, why: "A goal. This is the outcome they are trying to reach." },
+  { id: 12, src: "int", text: "“If it doesn’t plug into NetSuite, I won’t even book a demo.”", block: "criteria", theme: "integration", why: "A decision criterion. It is a condition for even considering a product." },
+  { id: 13, src: "int", text: "“Price matters less than whether setup takes weeks or days.”", block: "criteria", theme: null, why: "A decision criterion. Speed of setup outweighs price for them." },
+  { id: 14, src: "int", text: "Favorite ice cream: pistachio", block: "out", theme: null, why: "Nothing here changes how you message or reach this person." },
+  { id: 15, src: "li", text: "Probably a Millennial who prefers Slack to email", block: "out", theme: null, why: "A generational stereotype. It is not backed by data and does not explain buying behavior." },
+  { id: 16, src: "li", text: "Household income above $100,000", block: "out", theme: null, why: "Personal income rarely affects a professional software purchase." }
+];
+var ORDER = [9, 3, 14, 1, 6, 12, 4, 15, 5, 11, 8, 16, 10, 2, 13, 7];
+var state = { placed: {}, missed: {}, sel: null, msg: null, shake: null };
+
+function $(id) { return document.getElementById(id); }
+function byId(id) { for (var i = 0; i < CARDS.length; i++) if (CARDS[i].id === id) return CARDS[i]; }
+function tagText(c) { return SRC[c.src].n + " · " + SRC[c.src].d; }
+function lit(theme, src) {
+  for (var i = 0; i < CARDS.length; i++) { var c = CARDS[i]; if (state.placed[c.id] && c.theme === theme && c.src === src) return c; }
+  return null;
+}
+function setMsg(kind, html) { state.msg = { kind: kind, html: html }; }
+
+function place(cardId, blockId) {
+  var c = byId(cardId); if (!c || state.placed[cardId]) return;
+  if (c.block === blockId) {
+    var triBefore = triCount();
+    state.placed[cardId] = true; state.sel = null;
+    var allDone = Object.keys(state.placed).length === CARDS.length;
+    Snd.play(allDone ? "done" : triCount() > triBefore ? "tri" : "good");
+    setMsg("good", "<strong>Correct.</strong> " + c.why);
+  } else {
+    state.missed[cardId] = true; state.shake = cardId; Snd.play("bad");
+    var h = c.block === "out" ? "Ask whether this changes how you would message or reach this person. If not, it does not belong in the persona."
+      : blockId === "out" ? "This one carries real signal for messaging or targeting. Keep it in the persona."
+      : BLOCKS[c.block].hint;
+    setMsg("bad", "<strong>Not quite.</strong> " + h + " Try again.");
+  }
+  render();
+}
+
+function renderTray() {
+  var html = "", n = 0;
+  ORDER.forEach(function (id) {
+    if (state.placed[id]) return; n++;
+    var c = byId(id);
+    html += '<div class="card ' + c.src + (state.sel === id ? " sel" : "") + (state.shake === id ? " shake" : "") + '" role="button" tabindex="0" draggable="true" aria-pressed="' + (state.sel === id) + '" data-id="' + id + '"><div class="tag">' + tagText(c) + '</div>' + c.text + '</div>';
+  });
+  $("tray").innerHTML = n ? html : '<div class="empty">All evidence sorted.</div>';
+  state.shake = null;
+}
+function renderCanvas() {
+  var keys = ["role", "company", "pain", "goal", "criteria", "signals", "out"], html = "";
+  keys.forEach(function (k) {
+    var b = BLOCKS[k], items = "";
+    CARDS.forEach(function (c) { if (state.placed[c.id] && c.block === k) items += '<div class="chip ' + c.src + '"><small>' + tagText(c) + '</small>' + c.text + '</div>'; });
+    html += '<div class="block' + (k === "out" ? " out" : "") + '" role="button" tabindex="0" data-b="' + k + '" aria-label="Place in ' + b.t + '"><h3>' + b.t + '</h3><div class="d">' + b.d + '</div>' + items + '</div>';
+  });
+  $("canvas").innerHTML = html;
+}
+function triCount() {
+  var n = 0;
+  THEMES.forEach(function (t) { if (lit(t.id, "crm") && lit(t.id, "li") && lit(t.id, "int")) n++; });
+  return n;
+}
+function renderMeter() {
+  var html = "";
+  THEMES.forEach(function (t) {
+    var all = true, lamps = "";
+    ["crm", "li", "int"].forEach(function (s) {
+      var c = lit(t.id, s); if (!c) all = false;
+      lamps += '<div class="lamp ' + s + (c ? " on" : "") + '"><b>' + SRC[s].n + ": " + SRC[s].d + '</b>' + (c ? c.text : "Waiting for evidence") + '</div>';
+    });
+    html += '<div class="theme"><h3>' + t.name + '</h3><div class="lamps">' + lamps + '</div><div class="verdict' + (all ? " ok" : "") + '">' + (all ? "Triangulated. Safe to build messaging on this." : "Not yet confirmed by all three sources.") + '</div></div>';
+  });
+  $("meter").innerHTML = html;
+}
+function listFor(k) {
+  var out = [];
+  CARDS.forEach(function (c) { if (state.placed[c.id] && c.block === k) out.push(c); });
+  return out;
+}
+function renderPersona() {
+  function ul(k) {
+    var l = listFor(k); if (!l.length) return '<dd class="wait">Waiting for evidence</dd>';
+    return "<dd><ul>" + l.map(function (c) { return "<li>" + c.text + " <small>(" + SRC[c.src].n + ")</small></li>"; }).join("") + "</ul></dd>";
+  }
+  var done = Object.keys(state.placed).length === CARDS.length;
+  var first = CARDS.length - Object.keys(state.missed).length;
+  $("persona").innerHTML = '<h3>Alex, the BI Manager</h3><dl>' +
+    "<dt>Role and seniority</dt>" + ul("role") + "<dt>Company context</dt>" + ul("company") +
+    "<dt>Pain points</dt>" + ul("pain") + "<dt>Goals</dt>" + ul("goal") +
+    "<dt>Decision criteria</dt>" + ul("criteria") + "<dt>Behavior signals</dt>" + ul("signals") + "</dl>" +
+    (done ? '<div class="done"><strong>Persona complete.</strong> You placed ' + first + ' of ' + CARDS.length + ' cards correctly on the first try, and every detail traces back to a source. Next, take this into the one-page template in the practice assignment.</div>' : "");
+}
+function render() {
+  var m = state.msg;
+  $("msg").className = "msg" + (m ? " " + m.kind : "");
+  if (m) $("msg").innerHTML = m.html;
+  var p = Object.keys(state.placed).length;
+  $("sPlaced").innerHTML = p + " of " + CARDS.length + " sorted";
+  $("sTri").innerHTML = triCount() + " of 2 pain points triangulated";
+  renderTray(); renderCanvas(); renderMeter(); renderPersona();
+}
+
+function summary() {
+  var t = "Persona: Alex, the BI Manager\n";
+  [["role", "Role and seniority"], ["company", "Company context"], ["pain", "Pain points"], ["goal", "Goals"], ["criteria", "Decision criteria"], ["signals", "Behavior signals"]].forEach(function (p) {
+    t += "\n" + p[1] + ":\n";
+    listFor(p[0]).forEach(function (c) { t += "- " + c.text + " (Source: " + SRC[c.src].n + ")\n"; });
+  });
+  return t;
+}
+function copySummary() {
+  var text = summary(), out = $("copied");
+  function done(ok) { out.textContent = ok ? "Copied." : "Copy failed. Select the text manually."; setTimeout(function () { out.textContent = ""; }, 2500); }
+  function fb() { try { var t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); var ok = document.execCommand("copy"); document.body.removeChild(t); done(ok); } catch (e) { done(false); } }
+  try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { done(true); }, fb); else fb(); } catch (e) { fb(); }
+}
+
+document.addEventListener("click", function (e) {
+  var card = e.target.closest(".card"), blk = e.target.closest(".block");
+  if (card) { Snd.play("click"); var id = parseInt(card.getAttribute("data-id"), 10); state.sel = state.sel === id ? null : id; setMsg(null, ""); state.msg = { kind: "", html: state.sel ? "Selected: <em>" + byId(id).text + "</em>. Now choose a block." : "Pick an evidence card, then pick the canvas block where it belongs." }; render(); return; }
+  if (blk) {
+    var b = blk.getAttribute("data-b");
+    if (state.sel === null) { state.msg = { kind: "", html: "Pick an evidence card from the tray first." }; render(); return; }
+    place(state.sel, b);
+  }
+});
+document.addEventListener("keydown", function (e) {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  var el = e.target.closest ? e.target.closest(".card, .block") : null;
+  if (el) { e.preventDefault(); el.click(); }
+});
+document.addEventListener("dragstart", function (e) {
+  var card = e.target.closest && e.target.closest(".card"); if (!card) return;
+  try { e.dataTransfer.setData("text/plain", card.getAttribute("data-id")); e.dataTransfer.effectAllowed = "move"; } catch (x) {}
+});
+document.addEventListener("dragover", function (e) { if (e.target.closest && e.target.closest(".block")) e.preventDefault(); });
+document.addEventListener("drop", function (e) {
+  var blk = e.target.closest && e.target.closest(".block"); if (!blk) return;
+  e.preventDefault();
+  var id = parseInt(e.dataTransfer.getData("text/plain"), 10);
+  if (id) place(id, blk.getAttribute("data-b"));
+});
+$("reset").addEventListener("click", function () { state = { placed: {}, missed: {}, sel: null, msg: null, shake: null }; state.msg = { kind: "", html: "Pick an evidence card, then pick the canvas block where it belongs." }; render(); });
+$("copy").addEventListener("click", copySummary);
+Snd.init(false);
+render();
+</script>
+</body>
+</html>

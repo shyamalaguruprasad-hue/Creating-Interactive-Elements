@@ -1,0 +1,193 @@
+{
+  "src": {
+    "crm": {
+      "n": "CRM",
+      "d": "what they do"
+    },
+    "li": {
+      "n": "LinkedIn",
+      "d": "who they are"
+    },
+    "int": {
+      "n": "Interview",
+      "d": "why"
+    }
+  },
+  "blocks": {
+    "role": {
+      "t": "Role and seniority",
+      "d": "Who they are professionally",
+      "hint": "This one is about the person’s job, skills or place in the organization, not the company and not their feelings."
+    },
+    "company": {
+      "t": "Company context",
+      "d": "The environment they work in",
+      "hint": "This one describes the company: its size, industry or tools."
+    },
+    "pain": {
+      "t": "Pain points",
+      "d": "What frustrates them, in their words",
+      "hint": "A pain point is a problem they feel today. Look for frustration in their own voice."
+    },
+    "goal": {
+      "t": "Goals",
+      "d": "What success looks like",
+      "hint": "A goal is the outcome they want, not the obstacle in the way."
+    },
+    "criteria": {
+      "t": "Decision criteria",
+      "d": "What they need before they buy",
+      "hint": "Decision criteria are conditions a product has to meet before they will consider it."
+    },
+    "signals": {
+      "t": "Behavior signals",
+      "d": "What they have done with you",
+      "hint": "Behavior signals are actions recorded in your CRM, such as visits, downloads and attendance."
+    },
+    "out": {
+      "t": "Leave out",
+      "d": "Irrelevant or stereotyped details",
+      "hint": ""
+    }
+  },
+  "themes": [
+    {
+      "id": "reporting",
+      "name": "Manual reporting drains the week"
+    },
+    {
+      "id": "integration",
+      "name": "Disconnected tools"
+    }
+  ],
+  "cards": [
+    {
+      "id": 1,
+      "src": "crm",
+      "text": "Attended the webinar “Automating BI Reporting”",
+      "block": "signals",
+      "theme": "reporting",
+      "why": "A behavior signal. They are actively researching how to automate reporting."
+    },
+    {
+      "id": 2,
+      "src": "crm",
+      "text": "Visited the pricing page 3 times in 14 days",
+      "block": "signals",
+      "theme": null,
+      "why": "A behavior signal. Repeat pricing visits suggest they are evaluating cost."
+    },
+    {
+      "id": 3,
+      "src": "crm",
+      "text": "Retail company with 200–1,000 employees",
+      "block": "company",
+      "theme": null,
+      "why": "Firmographic context. Size and industry shape budget and buying process."
+    },
+    {
+      "id": 4,
+      "src": "crm",
+      "text": "Opened the API and integrations docs 4 times",
+      "block": "signals",
+      "theme": "integration",
+      "why": "A behavior signal. They keep checking how the product connects to other systems."
+    },
+    {
+      "id": 5,
+      "src": "li",
+      "text": "Business Intelligence Manager, 6 years of experience",
+      "block": "role",
+      "theme": null,
+      "why": "Title and experience define their role and seniority."
+    },
+    {
+      "id": 6,
+      "src": "li",
+      "text": "Skills listed: Excel, SQL, Tableau",
+      "block": "role",
+      "theme": "reporting",
+      "why": "Skills show how they work day to day. They live in spreadsheets and queries."
+    },
+    {
+      "id": 7,
+      "src": "li",
+      "text": "Reports to the VP of Operations",
+      "block": "role",
+      "theme": null,
+      "why": "Reporting line shows who influences their decisions."
+    },
+    {
+      "id": 8,
+      "src": "li",
+      "text": "Company tech stack includes NetSuite and Shopify Plus",
+      "block": "company",
+      "theme": "integration",
+      "why": "Company context. The tools already in place decide what has to integrate."
+    },
+    {
+      "id": 9,
+      "src": "int",
+      "text": "“I spend half my week pulling numbers into a spreadsheet.”",
+      "block": "pain",
+      "theme": "reporting",
+      "why": "A pain point in their own words, ready to reuse in messaging."
+    },
+    {
+      "id": 10,
+      "src": "int",
+      "text": "“My tools don’t talk to each other, so I rebuild the same report by hand.”",
+      "block": "pain",
+      "theme": "integration",
+      "why": "A second pain point, about disconnected systems."
+    },
+    {
+      "id": 11,
+      "src": "int",
+      "text": "“I need to show leadership which campaigns actually drive revenue.”",
+      "block": "goal",
+      "theme": null,
+      "why": "A goal. This is the outcome they are trying to reach."
+    },
+    {
+      "id": 12,
+      "src": "int",
+      "text": "“If it doesn’t plug into NetSuite, I won’t even book a demo.”",
+      "block": "criteria",
+      "theme": "integration",
+      "why": "A decision criterion. It is a condition for even considering a product."
+    },
+    {
+      "id": 13,
+      "src": "int",
+      "text": "“Price matters less than whether setup takes weeks or days.”",
+      "block": "criteria",
+      "theme": null,
+      "why": "A decision criterion. Speed of setup outweighs price for them."
+    },
+    {
+      "id": 14,
+      "src": "int",
+      "text": "Favorite ice cream: pistachio",
+      "block": "out",
+      "theme": null,
+      "why": "Nothing here changes how you message or reach this person."
+    },
+    {
+      "id": 15,
+      "src": "li",
+      "text": "Probably a Millennial who prefers Slack to email",
+      "block": "out",
+      "theme": null,
+      "why": "A generational stereotype. It is not backed by data and does not explain buying behavior."
+    },
+    {
+      "id": 16,
+      "src": "li",
+      "text": "Household income above $100,000",
+      "block": "out",
+      "theme": null,
+      "why": "Personal income rarely affects a professional software purchase."
+    }
+  ]
+}

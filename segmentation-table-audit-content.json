@@ -1,0 +1,156 @@
+{
+  "head": [
+    "Segment Name",
+    "Priority",
+    "Purpose",
+    "Criteria and Logic",
+    "Estimated Size"
+  ],
+  "rows": [
+    [
+      "Segment A",
+      "P1",
+      "Immediate sales follow-up",
+      "Industry: Retail AND Size: 50–500 employees AND (Behavior: Visited pricing page OR Requested demo)",
+      "150"
+    ],
+    [
+      "P1 – Retail Sales Call List",
+      "P1",
+      "Immediate sales follow-up",
+      "Industry: Retail AND Size: 50–500 employees",
+      "15,000"
+    ],
+    [
+      "P2 – Retail Ops and Marketing (Nurture)",
+      "P2",
+      "Automated nurture with case studies",
+      "Industry: Retail AND Size: 50–500 employees AND Title: Operations Manager OR Marketing Analyst",
+      "2,500"
+    ],
+    [
+      "P3 – Mid-Market Retail (Awareness)",
+      "P2",
+      "Top-of-funnel awareness on LinkedIn",
+      "Industry: Retail AND Size: 50–500 employees",
+      "15,000"
+    ],
+    [
+      "P3 – Sustainability-Minded Buyers",
+      "P3",
+      "Brand awareness",
+      "Cares about the environment AND values quality",
+      ""
+    ],
+    [
+      "P2 – Alaska Retail Analysts (Nurture)",
+      "P2",
+      "Nurture with analytics content",
+      "Region: Alaska AND Industry: Retail AND Title: BI Analyst AND Behavior: Read the blog on a Tuesday",
+      "3"
+    ],
+    [
+      "P2 – Retail E-commerce Leads (Nurture)",
+      "P2",
+      "Case study nurture",
+      "Industry: Retail AND Size: Large AND Title: E-commerce Manager",
+      "1,800"
+    ]
+  ],
+  "issues": [
+    {
+      "id": 1,
+      "cells": [
+        "0,0"
+      ],
+      "sev": "minor",
+      "title": "Vague segment name",
+      "test": "Clear naming",
+      "why": "“Segment A” tells nobody who is in it or why. A good name carries the priority and the audience, so sales and leadership read it the same way."
+    },
+    {
+      "id": 2,
+      "cells": [
+        "1,3",
+        "1,4"
+      ],
+      "sev": "critical",
+      "title": "A P1 sales list with no intent signal and 15,000 contacts",
+      "test": "Differentiable and actionable",
+      "why": "P1 means “call these people first.” Without a behavior such as a webinar or pricing visit, this is really an awareness list, and sales cannot work 15,000 contacts."
+    },
+    {
+      "id": 3,
+      "cells": [
+        "2,3"
+      ],
+      "sev": "medium",
+      "title": "OR used without parentheses",
+      "test": "Clear logic",
+      "why": "Without grouping, a platform may read this as “(Retail AND 50–500 AND Operations Manager) OR Marketing Analyst” and pull in marketing analysts from every company. Group the options: (Title: Operations Manager OR Marketing Analyst)."
+    },
+    {
+      "id": 4,
+      "cells": [
+        "3,1"
+      ],
+      "sev": "medium",
+      "title": "Priority does not match the name",
+      "test": "Consistency",
+      "why": "The name says P3 but the priority says P2. Anyone sorting by priority would put an awareness audience in the nurture tier."
+    },
+    {
+      "id": 5,
+      "cells": [
+        "4,3"
+      ],
+      "sev": "critical",
+      "title": "Criteria that no platform can filter on",
+      "test": "Measurable and accessible",
+      "why": "Attitudes like “cares about the environment” are not fields in a CRM or an ad platform. Use a proxy you can actually filter, such as downloaded the sustainability report."
+    },
+    {
+      "id": 6,
+      "cells": [
+        "4,4"
+      ],
+      "sev": "medium",
+      "title": "Missing size estimate",
+      "test": "Substantial",
+      "why": "Without a size you cannot tell whether the segment is worth a campaign. That is the whole point of the Estimated Size column."
+    },
+    {
+      "id": 7,
+      "cells": [
+        "5,3",
+        "5,4"
+      ],
+      "sev": "critical",
+      "title": "Over-filtered down to 3 contacts",
+      "test": "Substantial",
+      "why": "Four filters, including a day of the week, leave a segment too small to justify a campaign. Drop the region and blog-day filters and keep the ones that define the persona."
+    },
+    {
+      "id": 8,
+      "cells": [
+        "6,3"
+      ],
+      "sev": "medium",
+      "title": "Vague value: “Large”",
+      "test": "Clear logic",
+      "why": "“Large” means different things to different people. Use a number range, such as 50–500 employees, so anyone can rebuild the segment the same way."
+    }
+  ],
+  "fixes": {
+    "0,0": "P1 – High-Intent Retail Leads",
+    "1,3": "Industry: Retail AND Size: 50–500 employees AND Behavior: Attended product webinar in last 30 days",
+    "1,4": "400",
+    "2,3": "Industry: Retail AND Size: 50–500 employees AND (Title: Operations Manager OR Marketing Analyst)",
+    "3,1": "P3",
+    "4,3": "Industry: Retail AND Behavior: Downloaded sustainability report",
+    "4,4": "4,000",
+    "5,3": "Industry: Retail AND Size: 50–500 employees AND Title: BI Analyst",
+    "5,4": "900",
+    "6,3": "Industry: Retail AND Size: 50–500 employees AND Title: E-commerce Manager"
+  }
+}
