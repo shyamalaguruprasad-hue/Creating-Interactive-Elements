@@ -90,10 +90,15 @@ legend { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-
 .btn { font: inherit; font-weight: 600; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); padding: 7px 14px; border-radius: 8px; cursor: pointer; }
 .note { color: var(--muted); font-size: .85rem; margin-top: 18px; max-width: 80ch; }
 @media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+.sitenav { display: flex; justify-content: space-between; align-items: center; gap: 8px 16px; flex-wrap: wrap; margin: 0 0 14px; font-size: .95rem; color: var(--muted); }
+.sitenav a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.sitenav a:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.sitenav.foot { margin: 28px 0 0; padding-top: 14px; border-top: 1px solid var(--line); }
 </style>
 </head>
 <body>
 <div class="wrap">
+  <nav class="sitenav" aria-label="Activity navigation"><a href="index.html">Back to all activities</a><span>Activity 2 of 3</span></nav>
   <header>
     <h1>Segment size simulator</h1>
     <p>You’re a marketer at Innovatech Analytics with 500,000 contacts in North America. Add criteria one layer at a time and watch the audience shrink. Your job is to land in the right size range for the campaign.</p>
@@ -156,6 +161,7 @@ legend { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-
       <p class="note">Contact counts are illustrative estimates for practice. In real work, get them from your CRM filters or from LinkedIn Campaign Manager. Criteria in different layers combine with AND, and options inside a layer combine with OR.</p>
     </section>
   </div>
+  <nav class="sitenav foot" aria-label="Next steps"><a href="persona-evidence-board.html">Previous: Persona evidence board</a><a href="index.html">All activities</a><a href="segmentation-table-audit.html">Next: Segmentation table audit</a></nav>
 </div>
 
 <script>

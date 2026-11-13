@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Segment and Build Audiences: interactive practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --bg: #eef1f4; --panel: #ffffff; --ink: #14202b; --muted: #55636f; --line: #d3dae1;
+  --a1: #0f6b64; --a1-soft: #d6eeea;
+  --a2: #1d5fa8; --a2-soft: #dce9f7;
+  --a3: #a8261b; --a3-soft: #f8dcd8;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f171e; --panel: #172430; --ink: #e8eef3; --muted: #9db0bf; --line: #2b3b49;
+    --a1: #4fc4b8; --a1-soft: #14393a; --a2: #7fb4ee; --a2-soft: #172c44; --a3: #ff9186; --a3-soft: #471f1b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f171e; --panel: #172430; --ink: #e8eef3; --muted: #9db0bf; --line: #2b3b49;
+  --a1: #4fc4b8; --a1-soft: #14393a; --a2: #7fb4ee; --a2-soft: #172c44; --a3: #ff9186; --a3-soft: #471f1b;
+  color-scheme: dark;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 17px; line-height: 1.5; }
+h1, h2, h3 { font-family: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif; margin: 0; }
+.wrap { max-width: 900px; margin: 0 auto; padding: 36px 18px 56px; }
+header h1 { font-size: clamp(2rem, 6vw, 3.1rem); line-height: 1.05; margin-bottom: 12px; font-weight: 700; }
+header p { margin: 0 0 10px; max-width: 62ch; }
+header .meta { color: var(--muted); font-size: .95rem; }
+section { margin-top: 34px; }
+section > h2 { font-size: 1.35rem; margin-bottom: 4px; }
+section > .lead { color: var(--muted); margin: 0 0 14px; font-size: .96rem; }
+.act { display: grid; grid-template-columns: 8px 1fr auto; gap: 0 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+.act .stripe { background: var(--c); }
+.act .body { padding: 14px 0; }
+.act h3 { font-size: 1.2rem; margin-bottom: 4px; }
+.act p { margin: 0 0 8px; max-width: 60ch; }
+.act .facts { display: flex; flex-wrap: wrap; gap: 4px 16px; color: var(--muted); font-size: .9rem; }
+.act .go { align-self: center; padding-right: 16px; }
+.btn { display: inline-block; font-family: inherit; font-weight: 600; text-decoration: none; color: var(--ink); border: 2px solid var(--c); background: var(--soft); padding: 9px 18px; border-radius: 8px; white-space: nowrap; }
+.btn:hover { background: var(--c); color: var(--panel); }
+.btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.a1 { --c: var(--a1); --soft: var(--a1-soft); }
+.a2 { --c: var(--a2); --soft: var(--a2-soft); }
+.a3 { --c: var(--a3); --soft: var(--a3-soft); }
+@media (max-width: 600px) {
+  .act { grid-template-columns: 8px 1fr; }
+  .act .go { grid-column: 2; padding: 0 0 14px; }
+}
+.tips { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
+.tips ul { margin: 6px 0 0; padding-left: 20px; }
+.tips li { margin-bottom: 4px; }
+footer { margin-top: 30px; color: var(--muted); font-size: .88rem; max-width: 70ch; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Segment and Build Audiences</h1>
+    <p>Three short, hands-on activities for Short Course 2. Each one turns an idea from the readings into something you decide, sort or build, with instant feedback.</p>
+    <p class="meta">Ungraded practice. Works on desktop and phone, and each activity has a sound on/off button.</p>
+  </header>
+
+  <section aria-labelledby="m1">
+    <h2 id="m1">Module 1: Create buyer personas</h2>
+    <p class="lead">Practice after the reading on synthesizing data sources.</p>
+
+    <article class="act a1">
+      <div class="stripe"></div>
+      <div class="body">
+        <h3>Persona evidence board</h3>
+        <p>Sort 16 pieces of CRM, LinkedIn and interview evidence into a persona canvas, leave out the noise, and watch your persona take shape.</p>
+        <div class="facts"><span>You will: triangulate three data sources</span><span>About 8 minutes</span></div>
+      </div>
+      <div class="go"><a class="btn" href="persona-evidence-board.html">Open the board</a></div>
+    </article>
+  </section>
+
+  <section aria-labelledby="m2">
+    <h2 id="m2">Module 2: Define and apply segmentation</h2>
+    <p class="lead">Practice before and during the Excel segmentation table activity.</p>
+
+    <article class="act a2">
+      <div class="stripe"></div>
+      <div class="body">
+        <h3>Segment size simulator</h3>
+        <p>Layer industry, company size, region, job title and behavior onto a 500,000-contact database and find the size that fits each campaign goal.</p>
+        <div class="facts"><span>You will: balance relevance against reach</span><span>About 6 minutes</span></div>
+      </div>
+      <div class="go"><a class="btn" href="segment-size-simulator.html">Open the simulator</a></div>
+    </article>
+
+    <article class="act a3">
+      <div class="stripe"></div>
+      <div class="body">
+        <h3>Segmentation table audit</h3>
+        <p>The launch is tomorrow. Pick up the red pen and circle every problem hiding in a colleague’s segmentation table, then see the fixes.</p>
+        <div class="facts"><span>You will: spot flawed criteria, logic and sizing</span><span>About 8 minutes</span></div>
+      </div>
+      <div class="go"><a class="btn" href="segmentation-table-audit.html">Open the audit</a></div>
+    </article>
+  </section>
+
+  <section aria-labelledby="how">
+    <h2 id="how">Before you start</h2>
+    <div class="tips">
+      <ul>
+        <li>There are no scores that count. Try things, get it wrong, and read the feedback.</li>
+        <li>You can use a mouse, a finger or the keyboard. Select an item, then select where it goes.</li>
+        <li>Contact counts and company details are made up for practice.</li>
+        <li>Turn sound off with the Sound button inside any activity if you are in a shared space.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    Keep this page in the same folder as the three activity files so the links work. If you rename a file, update its link in this page.
+  </footer>
+</div>
+</body>
+</html>

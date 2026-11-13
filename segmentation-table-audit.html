@@ -78,10 +78,15 @@ th.rn { background: var(--head); color: var(--muted); font-weight: 400; text-ali
 .badge.y { background: var(--ok-soft); color: var(--ok); }
 .badge.n { background: var(--miss-soft); color: var(--miss); }
 @media print { .bar, .btn { display: none; } }
+.sitenav { display: flex; justify-content: space-between; align-items: center; gap: 8px 16px; flex-wrap: wrap; margin: 0 0 14px; font-size: .95rem; color: var(--muted); }
+.sitenav a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.sitenav a:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.sitenav.foot { margin: 28px 0 0; padding-top: 14px; border-top: 1px solid var(--line); }
 </style>
 </head>
 <body>
 <div class="wrap">
+  <nav class="sitenav" aria-label="Activity navigation"><a href="index.html">Back to all activities</a><span>Activity 3 of 3</span></nav>
   <header>
     <h1>Segmentation table audit</h1>
     <div class="memo">
@@ -106,6 +111,7 @@ th.rn { background: var(--head); color: var(--muted); font-weight: 400; text-ali
   </div>
 
   <div class="results" id="results" aria-live="polite"></div>
+  <nav class="sitenav foot" aria-label="Next steps"><a href="segment-size-simulator.html">Previous: Segment size simulator</a><a href="index.html">All activities</a><a href="index.html">Finish and return home</a></nav>
 </div>
 
 <script>

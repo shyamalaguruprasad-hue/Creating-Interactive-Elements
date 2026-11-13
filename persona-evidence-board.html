@@ -96,10 +96,15 @@ header p { margin: 0; color: var(--muted); max-width: 70ch; }
 .persona li small { color: var(--muted); }
 .done { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: var(--good-soft); border-left: 5px solid var(--good); }
 @media (prefers-reduced-motion: reduce) { .card.shake { animation: none; } }
+.sitenav { display: flex; justify-content: space-between; align-items: center; gap: 8px 16px; flex-wrap: wrap; margin: 0 0 14px; font-size: .95rem; color: var(--muted); }
+.sitenav a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.sitenav a:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.sitenav.foot { margin: 28px 0 0; padding-top: 14px; border-top: 1px solid var(--line); }
 </style>
 </head>
 <body>
 <div class="wrap">
+  <nav class="sitenav" aria-label="Activity navigation"><a href="index.html">Back to all activities</a><span>Activity 1 of 3</span></nav>
   <header>
     <h1>Persona evidence board</h1>
     <p>Innovatech Analytics is about to launch a data analytics platform, and your manager wants the first persona. Sort 16 pieces of evidence into the persona canvas. Some belong on it. Some are noise.</p>
@@ -138,6 +143,7 @@ header p { margin: 0; color: var(--muted); max-width: 70ch; }
       <div class="actions" style="margin-top:12px"><button class="btn" id="copy" type="button">Copy persona summary</button> <span id="copied" class="sub" aria-live="polite"></span></div>
     </section>
   </div>
+  <nav class="sitenav foot" aria-label="Next steps"><span></span><a href="index.html">All activities</a><a href="segment-size-simulator.html">Next: Segment size simulator</a></nav>
 </div>
 
 <script>
